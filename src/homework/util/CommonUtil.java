@@ -96,7 +96,7 @@ public class CommonUtil {
 
 		while (length > 0) {
 			int value = (int) (Math.random() * 10);
-			point += value > 5 ? "0" : "1";
+			point += value > 4 ? "0" : "1";
 			length--;
 		}
 		return point;
@@ -144,5 +144,30 @@ public class CommonUtil {
 
 		return list.get(index);
 	}
-
+	
+	/**
+	 * getRandomIndex
+	 * @param
+	 * @param getCount
+	 * @param repeat
+	 * @return
+	 */
+	public static List<Integer> getRandomIndex(int randomSize, int getCount, boolean repeat){
+		
+		List<Integer> list = new ArrayList<>();
+		
+		while(getCount > 0){
+			
+			int index = (int) (Math.random() * randomSize);
+			
+			if(!list.contains(index)){
+				list.add(index);
+				getCount--;
+			}
+		}
+		
+		return list;
+		
+	}
+	
 }
