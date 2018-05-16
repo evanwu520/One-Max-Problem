@@ -160,14 +160,35 @@ public class CommonUtil {
 			
 			int index = (int) (Math.random() * randomSize);
 			
-			if(!list.contains(index)){
+			
+			if(repeat){
 				list.add(index);
 				getCount--;
+			}else{
+				if(!list.contains(index)){
+					list.add(index);
+					getCount--;
+				}
 			}
+			
 		}
 		
 		return list;
 		
+	}
+	/**
+	 * AckleyFuncion
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static double AckleyFuncion(float x, float y){
+		
+		double v1 = -0.2 * Math.sqrt(0.5 * (x*x + y*y));
+		double v2 = 0.5 * (Math.cos(2*Math.PI*x) + Math.cos(2*Math.PI*y));
+		double value = -20 * Math.exp(v1) - Math.exp(v2)+Math.E+20;
+		
+		return value;
 	}
 	
 }

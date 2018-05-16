@@ -21,6 +21,8 @@ public class Excute {
 			int perIter = 100; // ¶¡¶Z
 
 			String function = "Greedy";
+			function = args[0];
+			
 
 			if (args.length == 4) {
 				function = args[0];
@@ -47,16 +49,24 @@ public class Excute {
 			} else if ("GA".equals(function)) {
 				
 				HashMap<String, Object> settingMap = new HashMap<>();
-				settingMap.put("itemCount", args[0]);
-				settingMap.put("populatonSize", args[1]);
-				settingMap.put("tournamentGrop", args[2]);
-				settingMap.put("crossOverRate", args[3]);
-				settingMap.put("mutationRate", args[4]);
-				settingMap.put("iterCount", args[5]);
-				settingMap.put("deduct", args[6]);
 				
-				GAwithKP ai = new GAwithKP(settingMap);
-				ai.serach();
+				if(args.length == 8){
+					settingMap.put("itemCount", args[1]);
+					settingMap.put("populatonSize", args[2]);
+					settingMap.put("tournamentGrop", args[3]);
+					settingMap.put("crossOverRate", args[4]);
+					settingMap.put("mutationRate", args[5]);
+					settingMap.put("iterCount", args[6]);
+					settingMap.put("deduct", args[7]);
+					
+					GAwithKP ai = new GAwithKP(settingMap);
+					ai.serach();
+				}else{
+					GAwithKP ai = new GAwithKP();
+					ai.test();
+				} 
+				
+				
 				
 
 			} else {

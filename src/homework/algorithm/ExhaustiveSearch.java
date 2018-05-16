@@ -1,5 +1,6 @@
 package homework.algorithm;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -17,7 +18,7 @@ public class ExhaustiveSearch{
 		int n = 0;
 		n = Integer.valueOf(bitCount);
 		isOpenConsoleLog = Integer.valueOf(openLog);
-		
+		ArrayList list = new ArrayList<>();		
 		long lStartTime = System.nanoTime();
 		search(n, "");
 		long lEndTime = System.nanoTime();

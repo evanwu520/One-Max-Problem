@@ -16,7 +16,7 @@ public class GAwithKP implements AI {
 
 	private int itemCount = 30; //物品種類
 	private int populatonSize = 20;
-	private int tournamentGrop = 7;
+	private int tournamentGrop = 4;
 	private float crossOverRate = 0.6f;
 	private float mutationRate = 0.1f;
 	private Item[] table = new Item[itemCount];
@@ -33,12 +33,10 @@ public class GAwithKP implements AI {
 		itemCount = (int) settingMap.get("itemCount");
 		populatonSize = (int) settingMap.get("populatonSize");
 		tournamentGrop = (int) settingMap.get("tournamentGrop");
-		crossOverRate = (float) settingMap.get("crossOverRate");s
+		crossOverRate = (float) settingMap.get("crossOverRate");
 		mutationRate = (float) settingMap.get("mutationRate");
 		iterCount = (int) settingMap.get("iterCount");
-		deduct = (float) settingMap.get("deduct");
 	}
-	
 
 	@Override
 	public TreeMap<Integer, String> serach() throws Exception {
@@ -47,10 +45,8 @@ public class GAwithKP implements AI {
 
 		// 產生 index 價值重量應表
 		weightBearing = genKPtable(table);
-		
 
 		for(Item it:table){
-			
 			System.out.println(it.toString());
 		}
 		
@@ -67,9 +63,9 @@ public class GAwithKP implements AI {
 		return null;
 	}
 	
-	public static void main(String args []) throws Exception{
-		test();
-	}
+//	public static void main(String args []) throws Exception{
+//		test();
+//	}
 	
 	
 	public static void test() throws Exception{
@@ -77,8 +73,12 @@ public class GAwithKP implements AI {
 		ai.serach();
 	}
 	
-	
-	private static void print (List<Knapsack> bagList, int i){
+	/**
+	 * print
+	 * @param bagList
+	 * @param i
+	 */
+	private void print (List<Knapsack> bagList, int i){
 		
 		Collections.sort(bagList, new Knapsack());
 		
@@ -87,15 +87,12 @@ public class GAwithKP implements AI {
 			if(k.isValid()){
 				System.out.printf("第%d代  %s\n", i, k.toString());
 				break;
-			
 			}
-			
 		}
 	}
 
 	/**
 	 * initPopulaton
-	 * 
 	 * @param list
 	 * @param size
 	 */
@@ -129,13 +126,11 @@ public class GAwithKP implements AI {
 				float newEv =  knapsack.getEv() - ((knapsack.getWeight() - knapsack.getWeightBearing()) * deduct);
 				knapsack.setEv(newEv);
 			}
-			
 		}
 	}
 
 	/**
 	 * putItem
-	 * 
 	 * @param knapsack
 	 */
 	private void putItem(Knapsack knapsack) {
@@ -155,7 +150,6 @@ public class GAwithKP implements AI {
 
 	/**
 	 * selection
-	 * 
 	 * @param list
 	 * @param selectCount
 	 * @param perGroup
@@ -164,9 +158,7 @@ public class GAwithKP implements AI {
 	 */
 	private void selection(List<Knapsack> list) throws CloneNotSupportedException {
 		
-		tournament(list, tournamentGrop);
-		
-		
+		tournament(list);
 	}
 	
 	/**
@@ -174,14 +166,14 @@ public class GAwithKP implements AI {
 	 * @param list
 	 * @param perGroup
 	 */
-	private void tournament(List<Knapsack> list, int perGroup){
+	private void tournament(List<Knapsack> list){
 
 		List<Knapsack> newList = new ArrayList<>();
 
 		for (int i = 0; i < list.size(); i++) {
 
 			List<Knapsack> bagGroup = new ArrayList<>();
-			List<Integer> indexList = CommonUtil.getRandomIndex(list.size(), 4, false);
+			List<Integer> indexList = CommonUtil.getRandomIndex(list.size(), tournamentGrop, false);
 
 			for (Integer index : indexList) {
 				bagGroup.add(list.get(index.intValue()));
@@ -245,7 +237,6 @@ public class GAwithKP implements AI {
 
 	/**
 	 * mutation
-	 * 
 	 * @param list
 	 * @throws CloneNotSupportedException 
 	 */
@@ -283,13 +274,10 @@ public class GAwithKP implements AI {
 			putItem(mutation);
 			list.add(mutation);
 		}
-		
-
 	}
 
 	/**
 	 * 產生對應表
-	 * 
 	 * @param table
 	 * @return
 	 */
@@ -308,5 +296,4 @@ public class GAwithKP implements AI {
 
 		return totalWeight;
 	}
-
 }
