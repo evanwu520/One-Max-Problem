@@ -11,12 +11,15 @@ import homework.util.CommonUtil;
 
 public class PSOwithAckleyFunction {
 
-	private int iterCount = 5;//舼计
-	private int particleCount = 10;	//采计秖 
-	private float c1 = 1.5f;	//舦1
-	private float c2 = 1.5f;	//竤砰舦2
-	private float boundMax = 30;	//程娩
-	private float boundMin = 0;	//程娩
+	private int iterCount = 0;//舼计
+	private int particleCount = 1;	//采计秖
+	private int boundMax = 30;	//程娩
+	private int boundMin = -30;	//程娩
+	private float w = 1f;	//篋┦舦
+	private float c1 = 1f;	//ō舦
+	private float c2 = 1f;	//竤砰舦3
+	private float velocityMax = 2.5f;
+	private float velocityMin = -2.5f;
 	
 	Point socialOptimal = new Point();	//竤砰程竚の
 	Point[] indivialOptimal= new Point[particleCount];	//程竚の
@@ -42,13 +45,14 @@ public class PSOwithAckleyFunction {
 			writer = new PrintWriter(f , "UTF-8");
 			init();
 			
-			for(int i=1; i<iterCount; i++){
+			for(int i=1; i<=iterCount; i++){
 				writer.println("--------------------------------"+"舼"+i+"------------------------------------------");
 				System.out.println("--------------------------------"+"舼"+i+"------------------------------------------");
 				
 				fitness();
-				updateVelocityAndPosition();
 				print(currentPostion, writer);
+				updateVelocityAndPosition();
+				
 				
 				writer.println("----------------------------------------------------------------------------");
 				System.out.println("----------------------------------------------------------------------------");
@@ -72,7 +76,20 @@ public class PSOwithAckleyFunction {
 			if(writer != null){
 				writer.close();
 			}
+
 		}
+//		Random rand = new Random();
+//		System.out.println(((float)(rand.nextInt(10)))/10);
+		
+//		for(int i=0; i<=1000; i++){
+//			System.out.println(CommonUtil.AckleyFuncion(i, i));
+//			System.out.println(CommonUtil.AckleyFuncion(i*-1, i*-1));
+//			
+//			if(CommonUtil.AckleyFuncion(i, i) == 20 && CommonUtil.AckleyFuncion(i*-1, i*-1) ==20){
+//				System.out.println(i);
+//				break;
+//			}
+//		}
 	}
 	
 	/**
@@ -90,26 +107,33 @@ public class PSOwithAckleyFunction {
 	
 	/**
 	 * init
+	 * @throws CloneNotSupportedException 
 	 */
-	public void init(){
+	public void init() throws CloneNotSupportedException{
 		
 		for(int i=0; i<particleCount; i++){
 			
 			Point p = new Point();
 			Random rand = new Random();
 			//random start point and random velocity
-			p.setX(rand.nextFloat() * (boundMax - boundMin) + boundMin);	
-			p.setY(rand.nextFloat() * (boundMax - boundMin) + boundMin);
-			p.setVelocity((rand.nextFloat() * (boundMax/20) - boundMin/20) +boundMin/20);
-			currentPostion[i] = p; 
+			p.setX(rand.nextInt(30+1+30)- 30);
+			p.setY(rand.nextInt(30+1+30)- 30);
+			p.setVelocityX(rand.nextFloat());
+			p.setVelocityY(rand.nextFloat());
+			p.setValue(9999999);
+			
+			indivialOptimal[i] = p.clone();
+			socialOptimal = p.clone();
+			currentPostion[i] = p.clone(); 
 		}
 		
 	}
 	
 	/**
 	 * fitness
+	 * @throws CloneNotSupportedException 
 	 */
-	public void fitness(){
+	public void fitness() throws CloneNotSupportedException{
 		
 		for(int i=0; i<particleCount; i++){
 			
@@ -122,19 +146,13 @@ public class PSOwithAckleyFunction {
 			}
 			
 			//replace indivail best value and location
-			if(p.getValue() > indivialOptimal[i].getValue()){
-				indivialOptimal[i].setValue(p.getValue());
-				indivialOptimal[i].setX(p.getX());
-				indivialOptimal[i].setY(p.getY());
-				indivialOptimal[i].setVelocity(p.getVelocity());
+			if(p.getValue() < indivialOptimal[i].getValue()){
+				indivialOptimal[i] = p.clone();
 			}
 			
 			//replace social best value and location
-			if(indivialOptimal[i].getValue() > socialOptimal.getValue()){
-				socialOptimal.setValue(indivialOptimal[i].getValue());
-				socialOptimal.setX(indivialOptimal[i].getX());
-				socialOptimal.setY(indivialOptimal[i].getY());
-				socialOptimal.setVelocity(indivialOptimal[i].getVelocity());
+			if(indivialOptimal[i].getValue() < socialOptimal.getValue()){
+				socialOptimal = indivialOptimal[i].clone();
 			}
 			
 		}
@@ -147,18 +165,39 @@ public class PSOwithAckleyFunction {
 		
 		for(int i=0; i<particleCount; i++){
 			
-			float newVelocity = this.calculateVelocity(currentPostion[i], indivialOptimal[i], socialOptimal);
+			float newVelocityX = this.calculateVelocity(currentPostion[i], indivialOptimal[i], socialOptimal, "X");
+			float newVelocityY = this.calculateVelocity(currentPostion[i], indivialOptimal[i], socialOptimal, "Y");
 			
-			currentPostion[i].setVelocity(newVelocity);
+			float newX = 0;
+			float newY = 0;
 			
-			float newX = currentPostion[i].getX() + newVelocity;
-			float newY = currentPostion[i].getY() + newVelocity;
+		    if(currentPostion[i].getX()>0 && newVelocityX>0){
+		    	newX = currentPostion[i].getX() - newVelocityX;
+		    }else if (currentPostion[i].getX()>0 && newVelocityX<0){
+		    	newX = currentPostion[i].getX() + newVelocityX;
+		    }else if (currentPostion[i].getX()<0 && newVelocityX>0){
+		    	newX = currentPostion[i].getX() + newVelocityX;
+		    }else if (currentPostion[i].getX()<0 && newVelocityX<0){
+		    	newX = currentPostion[i].getX() - newVelocityX;
+		    }
+		    
+		    if(currentPostion[i].getY()>0 && newVelocityY>0){
+		    	newY = currentPostion[i].getY() - newVelocityY;
+		    }else if (currentPostion[i].getY()>0 && newVelocityY<0){
+		    	newY = currentPostion[i].getY() + newVelocityY;
+		    }else if (currentPostion[i].getY()<0 && newVelocityY>0){
+		    	newY = currentPostion[i].getY() + newVelocityY;
+		    }else if (currentPostion[i].getY()<0 && newVelocityY<0){
+		    	newY = currentPostion[i].getY() - newVelocityY;
+		    }
+		    
 			
 			
+			System.out.println("newVelocityX:"+newVelocityX +" newVelocityY:"+newVelocityY);
 			//禬娩
 			if(newX > boundMax){
 				newX = boundMax;
-			}else if(newX < boundMin){
+			}else if(newX <boundMin){
 				newX = boundMin;
 			}
 			//禬娩
@@ -170,7 +209,8 @@ public class PSOwithAckleyFunction {
 			
 			currentPostion[i].setX(newX);
 			currentPostion[i].setY(newY);
-			
+			currentPostion[i].setVelocityX(newVelocityX);
+			currentPostion[i].setVelocityY(newVelocityY);
 		}
 	}
 	
@@ -181,16 +221,35 @@ public class PSOwithAckleyFunction {
 	 * @param social
 	 * @return
 	 */
-	private float calculateVelocity(Point current, Point individual, Point social){
+	private float calculateVelocity(Point current, Point individual, Point social, String direct){
 		
-		double velocity = 0;
+		float velocity = 0;
 		
 		Random rand = new Random();
-		// random -2~2
-		velocity = current.getVelocity() +  c1*(rand.nextInt(2+1+2)- 2) * (individual.getValue() - current.getValue()) 
-		+  c2*(rand.nextInt(2+1+2)- 2) * (social.getValue() - current.getValue()); 
+//		((float)(rand.nextInt(10)))/10
+		// random 0~1
 		
-		return (float)velocity;
+		
+		if("X".equalsIgnoreCase(direct)){
+			velocity = w*current.getVelocityX() +  c1*(((float)(rand.nextInt(10))+1)/10) * (individual.getX() - current.getX()) 
+					+  c2*(((float)(rand.nextInt(10))+1)/10) * (social.getX()- current.getX()); 
+		}else if("Y".equalsIgnoreCase(direct)){
+			velocity = w*current.getVelocityY() +  c1*(((float)(rand.nextInt(10))+1)/10) * (individual.getY() - current.getY()) 
+					+  c2*(((float)(rand.nextInt(10))+1)/10) * (social.getY()- current.getY()); 
+		}
+		
+		
+		
+		if(velocity> velocityMax){
+			velocity = velocityMax;
+		}
+		
+		if(velocity< velocityMin){
+			velocity = velocityMin;
+		}
+//		
+		
+		return velocity;
 	}
 	
 }
