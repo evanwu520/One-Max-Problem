@@ -3,11 +3,14 @@ package homework.main;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import homework.algorithm.ACOsolution;
 import homework.algorithm.AI;
+import homework.algorithm.AntForTSP;
 import homework.algorithm.ExhaustiveSearch;
 import homework.algorithm.GAwithKP;
 import homework.algorithm.HCsearchV2;
 import homework.algorithm.SAsearch;
+import homework.draw.DrawLine;
 import homework.util.CommonUtil;
 
 public class Excute {
@@ -48,7 +51,7 @@ public class Excute {
 
 			} else if ("GA".equals(function)) {
 				
-				HashMap<String, Object> settingMap = new HashMap<>();
+				HashMap<String, String> settingMap = new HashMap<>();
 				
 				if(args.length == 8){
 					settingMap.put("itemCount", args[1]);
@@ -66,9 +69,38 @@ public class Excute {
 					ai.test();
 				} 
 				
-				
-				
 
+			} else if("ANT".equals(function)) {
+				
+				HashMap<String, String> settingMap = new HashMap<>();
+				
+				System.out.println(args.length);
+				
+				if(args.length == 7){
+					
+					settingMap.put("iterCount", args[2]);
+					settingMap.put("Q", args[3]);
+					settingMap.put("alpha", args[4]);
+					settingMap.put("beta", args[5]);
+					settingMap.put("evaporation", args[6]);
+					
+					AntForTSP  explore = new AntForTSP(settingMap);
+					
+					//琌礶瓜
+					if("true".equals(args[1])){
+						DrawLine drawLine = new DrawLine();
+						drawLine.draw(explore);
+					}else{
+						explore.main();
+					}
+					
+				}else{
+					//default //柯闷计秖 100 //舼Ω计100 //糤眏禣禣╰计   Q 100 //alpha 玒计  1d //beta 玒计 3d //籡祇瞯 0.6d //ぃ礶瓜
+					ACOsolution explore = new AntForTSP();
+					explore.main();
+				}
+			
+				
 			} else {
 				System.out.println("parameter error");
 			}

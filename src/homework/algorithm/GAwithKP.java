@@ -28,14 +28,14 @@ public class GAwithKP implements AI {
 		
 	}
 	
-	public GAwithKP(HashMap<String, Object> settingMap){
+	public GAwithKP(HashMap<String, String> settingMap){
 		
-		itemCount = (int) settingMap.get("itemCount");
-		populatonSize = (int) settingMap.get("populatonSize");
-		tournamentGrop = (int) settingMap.get("tournamentGrop");
-		crossOverRate = (float) settingMap.get("crossOverRate");
-		mutationRate = (float) settingMap.get("mutationRate");
-		iterCount = (int) settingMap.get("iterCount");
+		itemCount = Integer.valueOf(settingMap.get("itemCount"));
+		populatonSize = Integer.valueOf(settingMap.get("populatonSize"));
+		tournamentGrop = Integer.valueOf(settingMap.get("tournamentGrop"));
+		crossOverRate = Integer.valueOf( settingMap.get("crossOverRate"));
+		mutationRate = Integer.valueOf(settingMap.get("mutationRate"));
+		iterCount = Integer.valueOf(settingMap.get("iterCount"));
 	}
 
 	@Override
